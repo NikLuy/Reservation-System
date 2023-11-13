@@ -1,0 +1,160 @@
+﻿@using Microsoft.AspNetCore.Components;
+@using Microsoft.AspNetCore.Components.Web;
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.EntityFrameworkCore;
+@using Reservation.Models;
+@using Reservation.Web.Data;
+<h3>UserRightsManager</h3>
+
+@inject ApplicationDbContext _dbContext
+@inject UserManager<AppUser> _userManager
+
+@if (IsLoading)
+{
+    <div class="spinner-border" role="status">
+        <span class="sr-only"></span>
+    </div>
+}
+else
+{
+    @if (AppUsers != null && AppUsers.Any())
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>E-Mail</th>
+                    <th>Roles</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in AppUsers)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@user.Email</td>
+                        <td>
+                            <ul>
+                                @foreach (var role in AppRoles)
+                                {
+                                    <li>
+                                        <input type="checkbox" @onchange="e=>{ChangeRole(user,role.Id,(bool)e.Value);}" checked="@(user.UserRoles.Any(r=>r.RoleId == role.Id)? true:false)">
+                                        <button class="btn btn-primary" @onclick="()=>ChangeRole(user,role.Id)"></button>
+                                        <label>@role.Name</label>
+                                    </li>
+                                }
+
+                            </ul>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+
+@code {
+    private List<AppUser> AppUsers { get; set; }
+    private List<AppRole> AppRoles { get; set; }
+    private bool IsLoading { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        IsLoading = true;
+        StateHasChanged();
+        try
+        {
+
+            AppUsers = await _dbContext.Users
+            .Include(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .ToListAsync();
+
+            AppRoles = await _dbContext.Roles.ToListAsync();
+
+        }
+        catch (Exception ex)
+        {
+            //Debug.WriteLine(ex.Message);
+        }
+
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+    private async Task ChangeRole(AppUser User, string RoleId)
+    {
+        if (User.UserRoles.Any(r=>r.RoleId == RoleId))
+        {
+            var UR = User.UserRoles.FirstOrDefault(ur => ur.RoleId == RoleId);
+            if (UR != null)
+            {
+                User.UserRoles.Remove(UR);
+                _dbContext.Users.Update(User);
+                await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                // Error Deleting
+            }
+        }
+        else
+        {
+            var Role = AppRoles.FirstOrDefault(r => r.Id == RoleId);
+            if (Role != null)
+            {
+                User.UserRoles.Add(new AppUserRole()
+                {
+                    User = User,
+                    Role = Role
+                });
+                _dbContext.Users.Update(User);
+                await _dbContext.SaveChangesAsync();
+            }
+
+        }
+
+       await LoadData();
+    }
+    private async Task ChangeRole(AppUser User, string RoleId,bool State)
+    {
+        if (!State)
+        {
+            var UR = User.UserRoles.FirstOrDefault(ur => ur.RoleId == RoleId);
+            if (UR != null)
+            {
+                User.UserRoles.Remove(UR);
+                _dbContext.Users.Update(User);
+                await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                // Error Deleting
+            }
+        }
+        else
+        {
+            var Role = AppRoles.FirstOrDefault(r => r.Id == RoleId);
+            if (Role != null)
+            {
+                User.UserRoles.Add(new AppUserRole()
+                    {
+                        User = User,
+                        Role = Role
+                    });
+                _dbContext.Users.Update(User);
+                await _dbContext.SaveChangesAsync();
+            }
+
+        }
+
+        await LoadData();
+    }
+
+}
