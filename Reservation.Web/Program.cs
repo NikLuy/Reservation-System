@@ -15,8 +15,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+
 
 builder.Services.AddAuthentication()
    .AddMicrosoftAccount(microsoftOptions =>
@@ -25,14 +24,27 @@ builder.Services.AddAuthentication()
        microsoftOptions.ClientSecret = builder.Configuration["GraphSettings:ClientSecret"];
    });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+});
+
+builder.Services.AddRazorPages(options =>
+{
+    //options.Conventions.AuthorizeFolder("/Admin", "AdminPolicy");
+});
+
+builder.Services.AddServerSideBlazor();
+
 #region E-Mail
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
-builder.Services.AddTransient<IEmailSender, EmailSender>();
+//builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.Configure<GraphSettings>(builder.Configuration.GetSection("GraphSettings"));
+builder.Services.AddTransient<IEmailSender, GraphEmailSender>();
 #endregion E-Mail
 
 
 builder.Services.Configure<GraphSettings>(
-    builder.Configuration.GetSection(GraphSettings.SettingsName) );
+    builder.Configuration.GetSection(GraphSettings.SettingsName));
 
 builder.Services.AddSingleton<GraphService>();
 

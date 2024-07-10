@@ -1,0 +1,65 @@
+﻿@page
+@model Reservation.Web.Pages.Admin.ManageRooms.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>RoomModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="RoomModel.Id" />
+            <div class="form-group">
+                <label asp-for="RoomModel.RoomEmail" class="control-label"></label>
+                <input asp-for="RoomModel.RoomEmail" class="form-control" />
+                <span asp-validation-for="RoomModel.RoomEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RoomModel.Name" class="control-label"></label>
+                <input asp-for="RoomModel.Name" class="form-control" />
+                <span asp-validation-for="RoomModel.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RoomModel.Description" class="control-label"></label>
+                <input asp-for="RoomModel.Description" class="form-control" />
+                <span asp-validation-for="RoomModel.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RoomModel.Space" class="control-label"></label>
+                <input asp-for="RoomModel.Space" class="form-control" />
+                <span asp-validation-for="RoomModel.Space" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="RoomModel.HasKitchen" /> @Html.DisplayNameFor(model => model.RoomModel.HasKitchen)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="RoomModel.HasCoffeeMachine" /> @Html.DisplayNameFor(model => model.RoomModel.HasCoffeeMachine)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="RoomModel.CategoryId" class="control-label"></label>
+                <input asp-for="RoomModel.CategoryId" class="form-control" />
+                <span asp-validation-for="RoomModel.CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

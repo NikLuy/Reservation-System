@@ -7,6 +7,7 @@ namespace Reservation.Web.Pages.Admin
     {
         public void OnGet()
         {
+            var u = User.IsInRole(role: "Admin");
         }
     }
 }

@@ -28,7 +28,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var user in AppUsers)
+             @*    @foreach (var user in AppUsers)
                 {
                     <tr>
                         <td>@user.UserName</td>
@@ -47,7 +47,7 @@ else
                             </ul>
                         </td>
                     </tr>
-                }
+                } *@
             </tbody>
         </table>
     }
@@ -71,12 +71,12 @@ else
         try
         {
 
-            AppUsers = await _dbContext.Users
-            .Include(u => u.UserRoles)
-            .ThenInclude(ur => ur.Role)
-            .ToListAsync();
+            // AppUsers = await _dbContext.Users
+            // .Include(u => u.UserRoles)
+            // .ThenInclude(ur => ur.Role)
+            // .ToListAsync();
 
-            AppRoles = await _dbContext.Roles.ToListAsync();
+            // AppRoles = await _dbContext.Roles.ToListAsync();
 
         }
         catch (Exception ex)
@@ -90,71 +90,71 @@ else
 
     private async Task ChangeRole(AppUser User, string RoleId)
     {
-        if (User.UserRoles.Any(r=>r.RoleId == RoleId))
-        {
-            var UR = User.UserRoles.FirstOrDefault(ur => ur.RoleId == RoleId);
-            if (UR != null)
-            {
-                User.UserRoles.Remove(UR);
-                _dbContext.Users.Update(User);
-                await _dbContext.SaveChangesAsync();
-            }
-            else
-            {
-                // Error Deleting
-            }
-        }
-        else
-        {
-            var Role = AppRoles.FirstOrDefault(r => r.Id == RoleId);
-            if (Role != null)
-            {
-                User.UserRoles.Add(new AppUserRole()
-                {
-                    User = User,
-                    Role = Role
-                });
-                _dbContext.Users.Update(User);
-                await _dbContext.SaveChangesAsync();
-            }
+        // if (User.UserRoles.Any(r=>r.RoleId == RoleId))
+        // {
+        //     var UR = User.UserRoles.FirstOrDefault(ur => ur.RoleId == RoleId);
+        //     if (UR != null)
+        //     {
+        //         User.UserRoles.Remove(UR);
+        //         _dbContext.Users.Update(User);
+        //         await _dbContext.SaveChangesAsync();
+        //     }
+        //     else
+        //     {
+        //         // Error Deleting
+        //     }
+        // }
+        // else
+        // {
+        //     var Role = AppRoles.FirstOrDefault(r => r.Id == RoleId);
+        //     if (Role != null)
+        //     {
+        //         User.UserRoles.Add(new AppUserRole()
+        //         {
+        //             User = User,
+        //             Role = Role
+        //         });
+        //         _dbContext.Users.Update(User);
+        //         await _dbContext.SaveChangesAsync();
+        //     }
 
-        }
+        // }
 
        await LoadData();
     }
-    private async Task ChangeRole(AppUser User, string RoleId,bool State)
-    {
-        if (!State)
-        {
-            var UR = User.UserRoles.FirstOrDefault(ur => ur.RoleId == RoleId);
-            if (UR != null)
-            {
-                User.UserRoles.Remove(UR);
-                _dbContext.Users.Update(User);
-                await _dbContext.SaveChangesAsync();
-            }
-            else
-            {
-                // Error Deleting
-            }
-        }
-        else
-        {
-            var Role = AppRoles.FirstOrDefault(r => r.Id == RoleId);
-            if (Role != null)
-            {
-                User.UserRoles.Add(new AppUserRole()
-                    {
-                        User = User,
-                        Role = Role
-                    });
-                _dbContext.Users.Update(User);
-                await _dbContext.SaveChangesAsync();
-            }
+    // private async Task ChangeRole(AppUser User, string RoleId,bool State)
+    // {
+    //     if (!State)
+    //     {
+    //         var UR = User.UserRoles.FirstOrDefault(ur => ur.RoleId == RoleId);
+    //         if (UR != null)
+    //         {
+    //             User.UserRoles.Remove(UR);
+    //             _dbContext.Users.Update(User);
+    //             await _dbContext.SaveChangesAsync();
+    //         }
+    //         else
+    //         {
+    //             // Error Deleting
+    //         }
+    //     }
+    //     else
+    //     {
+    //         var Role = AppRoles.FirstOrDefault(r => r.Id == RoleId);
+    //         if (Role != null)
+    //         {
+    //             User.UserRoles.Add(new AppUserRole()
+    //                 {
+    //                     User = User,
+    //                     Role = Role
+    //                 });
+    //             _dbContext.Users.Update(User);
+    //             await _dbContext.SaveChangesAsync();
+    //         }
 
-        }
+    //     }
 
-        await LoadData();
-    }
+    //     await LoadData();
+    // }
 
 }

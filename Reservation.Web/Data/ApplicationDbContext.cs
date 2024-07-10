@@ -5,9 +5,9 @@ using Reservation.Models;
 
 namespace Reservation.Web.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<AppUser, AppRole, string,
-        IdentityUserClaim<string>,AppUserRole, IdentityUserLogin<string>,
-        IdentityRoleClaim<string>, IdentityUserToken<string>>
+    public class ApplicationDbContext : IdentityDbContext<AppUser>//, AppRole>//, string,
+       // IdentityUserClaim<string>,AppUserRole, IdentityUserLogin<string>,
+        //IdentityRoleClaim<string>, IdentityUserToken<string>>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -18,21 +18,21 @@ namespace Reservation.Web.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<AppUser>(b =>
-            {
-                b.HasMany(e => e.UserRoles)
-                .WithOne(e => e.User)
-                .HasForeignKey(ur => ur.UserId)
-                .IsRequired();
-            });
+            //builder.Entity<AppUser>(b =>
+            //{
+            //    b.HasMany(e => e.UserRoles)
+            //    .WithOne(e => e.User)
+            //    .HasForeignKey(ur => ur.UserId)
+            //    .IsRequired();
+            //});
 
-            builder.Entity<AppRole>(b =>
-            {
-                b.HasMany(e => e.UserRoles)
-                    .WithOne(e => e.Role)
-                    .HasForeignKey(ur => ur.RoleId)
-                    .IsRequired();
-            });
+            //builder.Entity<AppRole>(b =>
+            //{
+            //    b.HasMany(e => e.UserRoles)
+            //        .WithOne(e => e.Role)
+            //        .HasForeignKey(ur => ur.RoleId)
+            //        .IsRequired();
+            //});
 
             Seed(builder);
         }
@@ -51,7 +51,9 @@ namespace Reservation.Web.Data
                 NormalizedName = "EDITOR"
             };
             builder.Entity<AppRole>().HasData(rolAdmin, roleEditor);
-
         }
+
+        public DbSet<RoomModel> Rooms { get; set; }
+        public DbSet<UserReservation> Reservations { get; set; }
     }
 }

@@ -13,6 +13,6 @@ namespace Reservation.Models
         public string Name { get; set; }
         public string Vorname { get; set; }
 
-        public virtual ICollection<AppUserRole> UserRoles { get; set; }
+        //public virtual ICollection<AppUserRole> UserRoles { get; set; }
     }
 }
